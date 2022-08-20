@@ -1,0 +1,16 @@
+.topRow{
+    font-size: 20px;
+    max-height: 30px;
+    
+}
+
+.middleRow{
+    font-size: 30px;
+    border-style: solid;
+    border-width: 4px;
+}
+
+.bottomRow{
+    min-height: 40px;
+    font-size: 20px;
+}
