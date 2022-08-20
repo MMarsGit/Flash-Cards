@@ -5,3 +5,8 @@ from most frequent to least frequent. <br>
 Additionally, after a flash card is completed it will be set to reappear based on a certain frequency. <br>
 That frequency is: 1 day, 3 days, 7 days and then 30 days. <br>
 For the translations Bab.la is scraped. <br>
+
+##modules and libraries
+PyQt - Used to create a GUI for the program.
+BeautifulSoup - Used to scrape Bab.la.
+SQLite - Used for database functionality.
