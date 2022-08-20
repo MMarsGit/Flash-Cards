@@ -10,3 +10,6 @@ For the translations Bab.la is scraped. <br>
 PyQt - Used to create a GUI for the program. <br>
 BeautifulSoup - Used to scrape Bab.la. <br>
 SQLite - Used for database functionality. <br>
+
+## Example Image
+![](Images/FlashCards.png)
