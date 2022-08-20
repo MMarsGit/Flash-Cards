@@ -6,7 +6,7 @@ Additionally, after a flash card is completed it will be set to reappear based o
 That frequency is: 1 day, 3 days, 7 days and then 30 days. <br>
 For the translations Bab.la is scraped. <br>
 
-##modules and libraries
+## modules and libraries
 PyQt - Used to create a GUI for the program. <br>
 BeautifulSoup - Used to scrape Bab.la. <br>
 SQLite - Used for database functionality. <br>
