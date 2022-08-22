@@ -9,19 +9,25 @@ def search_PolishEng(phrase):
     baseURL = "https://en.bab.la/dictionary/polish-english/"
     searchURL = baseURL + phrase
 
+    items = []
+
     page = requests.get(searchURL, headers=headers)
     soup = BeautifulSoup(page.content, 'html.parser')
     uls = soup.find("ul", {"class", "sense-group-results"})
+    if (uls != None):
+        lis = uls.find_all("li")
+        items = []
 
-    lis = uls.find_all("li")
-    items = []
-
-    for element in lis:
-            a = element.find_all("a")
-            for item in a:
-                items.append(item.text.strip())
+        for element in lis:
+                a = element.find_all("a")
+                for item in a:
+                    items.append(item.text.strip())
+        
+        items.pop(0)
+    else:
+        print(phrase)
     
-    items.pop(0)
     return items
 
-search_PolishEng("dzień")
+items = search_PolishEng("dzień")
+print(items)

@@ -1,5 +1,8 @@
+from Classes.Core.Scrape import search_PolishEng
 import Debug.Debug as Debug
 import Classes.Core.Objects.Card as Card
+import Classes.Core.ProcessFile as ProcessFile
+import time
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PyQt5.QtCore import Qt
@@ -39,12 +42,19 @@ class FlashCards(QWidget):
         #sub layouts
         #Top row
         topRowLayout = QHBoxLayout()
+        #Card Status
         self.cardStatusLabel = QLabel()
         self.cardStatusLabel.setProperty("class", "topRow")
+        #Menu Button
+        self.generateButton = QPushButton("Generate")
+        self.generateButton.setProperty("class", "topRow")
+        #Card lefts
         self.cardsLeftLabel = QLabel("?/?")
         self.cardsLeftLabel.setAlignment(Qt.AlignRight)
         self.cardsLeftLabel.setProperty("class", "topRow")
+        #Setup top row
         topRowLayout.addWidget(self.cardStatusLabel)
+        topRowLayout.addWidget(self.generateButton)
         topRowLayout.addWidget(self.cardsLeftLabel)
         parentLayout.addLayout(topRowLayout)
 
@@ -56,11 +66,18 @@ class FlashCards(QWidget):
 
         #Bottom row
         bottomRowLayout = QHBoxLayout()
+        #Wrong button
         self.wrongButton = QPushButton("Incorrect")
         self.wrongButton.setProperty("class", "bottomRow")
+        #flip button
+        self.flipButton = QPushButton("Flip")
+        self.flipButton.setProperty("class", "bottomRow")
+        #right button
         self.correctButton = QPushButton("Correct")
         self.correctButton.setProperty("class", "bottomRow")
+        #Add to bottom row
         bottomRowLayout.addWidget(self.wrongButton)
+        bottomRowLayout.addWidget(self.flipButton)
         bottomRowLayout.addWidget(self.correctButton)
         parentLayout.addLayout(bottomRowLayout)
 
@@ -69,6 +86,8 @@ class FlashCards(QWidget):
         
     def WidgetActions(self):
         Debug.log("Preparing widget actions")
+        self.generateButton.clicked.connect(self.generateButtonPressed)
+        self.flipButton.clicked.connect(self.flipButtonPressed)
 
     def onLoad(self):
         self.card = Card.Card()
@@ -84,3 +103,28 @@ class FlashCards(QWidget):
         self.WidgetActions()
         self.onLoad()
 
+    def generateButtonPressed(self):
+        Debug.log("Generate Button Pressed")
+        #intiate variables
+        stringLations = []
+
+        #Setup card names
+        dict = ProcessFile.processTxT()
+        cardNames = ProcessFile.sortByFrequency(dict)
+
+        for index in range(len(cardNames)):
+            #Get translations
+            print(cardNames[index])
+            translations = search_PolishEng(cardNames[index])
+            #translations to string
+            for lation in translations:
+                stringLations += str(lation) + ", "
+            #Turn to cards
+            self.card.setWord("new", cardNames[index], stringLations)
+            self.cardStatusLabel.setText(self.card.status)
+            self.cardLabel.setText(self.card.word)
+
+            time.sleep(0.5)
+
+    def flipButtonPressed(self):
+        self.cardLabel.setText(self.card.translation)

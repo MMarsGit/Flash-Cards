@@ -2,7 +2,7 @@
 
 def processTxT():
     dict = {}
-    with open("../../dataSet.txt", mode="r", encoding="UTF-8") as file:
+    with open("dataSet.txt", mode="r", encoding="UTF-8") as file:
         for line in file:
             for word in line.split():
                 rawWord = word.replace(",","")
