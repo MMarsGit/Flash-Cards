@@ -3,6 +3,7 @@ import Debug.Debug as Debug
 import Classes.Core.Objects.Card as Card
 import Classes.Core.ProcessFile as ProcessFile
 import time
+import Classes.Core.database as Database
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PyQt5.QtCore import Qt
@@ -88,11 +89,21 @@ class FlashCards(QWidget):
         Debug.log("Preparing widget actions")
         self.generateButton.clicked.connect(self.generateButtonPressed)
         self.flipButton.clicked.connect(self.flipButtonPressed)
+        self.wrongButton.clicked.connect(self.wrongButtonPressed)
+        self.correctButton.clicked.connect(self.correctButtonPressed)
 
     def onLoad(self):
+        Debug.isDebug = True
+        #setup database
+        self.db = Database.database()
+        self.db.create_table()
+        firstRecord = self.db.get_first_record()
+        self.cardCount = int(firstRecord[0])
+        self.lastid = self.db.get_last_row_id()
+
+        #setup first card
         self.card = Card.Card()
-        #self.card.getCardfromDb()
-        self.card.setWord("new", "Dzien Dobry", "Good Morning")
+        self.card.setWord(firstRecord[1], firstRecord[2], firstRecord[3])
         self.cardStatusLabel.setText(self.card.status)
         self.cardLabel.setText(self.card.word)
 
@@ -106,11 +117,16 @@ class FlashCards(QWidget):
     def generateButtonPressed(self):
         Debug.log("Generate Button Pressed")
         #intiate variables
-        stringLations = []
+        stringLations = ""
 
         #Setup card names
         dict = ProcessFile.processTxT()
         cardNames = ProcessFile.sortByFrequency(dict)
+
+        #Wipe table
+        
+        self.db.delete_table()
+        self.db.create_table()
 
         for index in range(len(cardNames)):
             #Get translations
@@ -118,13 +134,40 @@ class FlashCards(QWidget):
             translations = search_PolishEng(cardNames[index])
             #translations to string
             for lation in translations:
-                stringLations += str(lation) + ", "
+                stringLations += str(lation + ", ")
+            Debug.debug("Stringlations: " + stringLations)
+            stringLations = stringLations.rstrip(", ")
             #Turn to cards
             self.card.setWord("new", cardNames[index], stringLations)
-            self.cardStatusLabel.setText(self.card.status)
-            self.cardLabel.setText(self.card.word)
-
+            #add card to table
+            self.db.insert_card(self.card)
+            stringLations = ""
             time.sleep(0.5)
+
+        #set first card to label
+        self.cardStatusLabel.setText(self.card.status)
+        self.cardLabel.setText(self.card.word)
 
     def flipButtonPressed(self):
         self.cardLabel.setText(self.card.translation)
+
+    def wrongButtonPressed(self):
+        self.cardCount+=1
+        print(self.cardCount)
+        print(self.lastid)
+        if (self.cardCount <= int(self.lastid[0])):
+            currentCard = self.db.get_record(self.cardCount)
+            print("Current card: " + str(currentCard))
+            self.card.setWord(currentCard[1], currentCard[2], currentCard[3])
+            self.cardStatusLabel.setText(self.card.status)
+            self.cardLabel.setText(self.card.word)
+
+    def correctButtonPressed(self):
+        self.cardCount+=1
+        
+        if (self.cardCount <= int(self.lastid[0])):
+            currentCard = self.db.get_record(self.cardCount)
+            self.card.setWord(currentCard[1], currentCard[2], currentCard[3])
+            self.cardStatusLabel.setText(self.card.status)
+            self.cardLabel.setText(self.card.word)
+        
