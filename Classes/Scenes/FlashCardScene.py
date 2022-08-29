@@ -1,11 +1,12 @@
 from asyncio.windows_events import NULL
+from tkinter import Y
 from Classes.Core.Scrape import search_PolishEng
 import Debug.Debug as Debug
 import Classes.Core.Objects.Card as Card
 import Classes.Core.ProcessFile as ProcessFile
 import time
 import Classes.Core.database as Database
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PyQt5.QtCore import Qt
@@ -164,17 +165,27 @@ class FlashCards(QWidget):
         if (self.cardCount <= int(self.lastid[0])):
             #Get next card & update label - maybe add to card.py
             currentCard = self.db.get_record(self.cardCount)
-            Debug.debug("Current card: " + str(currentCard))
-            self.card.setWord(currentCard[1], currentCard[2], currentCard[3])
-            self.cardStatusLabel.setText(self.card.status)
-            self.cardLabel.setText(self.card.word)
+            if (currentCard[5] == None):
+                currentCardDate = date.today()
+            else:
+                print(str(currentCard[5]))
+                currentCardDate = datetime.strptime(str(currentCard[5]), "%Y-%m-%d").date()
+            
+            if (currentCardDate <= date.today()):
+
+                Debug.debug("Current card: " + str(currentCard))
+                self.card.setWord(currentCard[1], currentCard[2], currentCard[3])
+                self.cardStatusLabel.setText(self.card.status)
+                self.cardLabel.setText(self.card.word)
+            else:
+                self.cardCount +=1
 
     def correctButtonPressed(self):
         
         
         currentCard = self.db.get_record(self.cardCount)
         print(currentCard)
-        
+        #Spaced repetition
         if (currentCard[4] == None):
             currentReps = 0
         else:
