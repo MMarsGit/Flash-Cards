@@ -1,9 +1,11 @@
+from asyncio.windows_events import NULL
 from Classes.Core.Scrape import search_PolishEng
 import Debug.Debug as Debug
 import Classes.Core.Objects.Card as Card
 import Classes.Core.ProcessFile as ProcessFile
 import time
 import Classes.Core.database as Database
+from datetime import date, timedelta
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PyQt5.QtCore import Qt
@@ -155,22 +157,48 @@ class FlashCards(QWidget):
 
     def wrongButtonPressed(self):
         self.cardCount+=1
-        if (self.cardCount <= int(self.lastid[0])):
-            Debug.debug("Current card: " + str(currentCard))
+        repetitions = 0
+        nextAppearance = str(date.today())
+        self.db.updateRepetitions(repetitions, nextAppearance, self.card.word)
 
+        if (self.cardCount <= int(self.lastid[0])):
             #Get next card & update label - maybe add to card.py
             currentCard = self.db.get_record(self.cardCount)
+            Debug.debug("Current card: " + str(currentCard))
             self.card.setWord(currentCard[1], currentCard[2], currentCard[3])
             self.cardStatusLabel.setText(self.card.status)
             self.cardLabel.setText(self.card.word)
 
     def correctButtonPressed(self):
+        
+        
+        currentCard = self.db.get_record(self.cardCount)
+        print(currentCard)
+        
+        if (currentCard[4] == None):
+            currentReps = 0
+        else:
+            currentReps = int(currentCard[4])
+        if (currentReps == 0):
+            repetitions = 1
+            nextAppearance = str(date.today() + timedelta(days=3))
+            self.db.updateRepetitions(repetitions,nextAppearance, self.card.word)
+
+        elif (currentReps == 1):
+            repetitions = 2
+            nextAppearance = str(date.today() + timedelta(days=7))
+            self.db.updateRepetitions(repetitions,nextAppearance, self.card.word)
+
+        elif (currentReps == 2):
+            repetitions = 3
+            nextAppearance = str(date.today() + timedelta(days=30))
+            self.db.updateRepetitions(repetitions,nextAppearance, self.card.word)
+
         self.cardCount+=1
         if (self.cardCount <= int(self.lastid[0])):
-            Debug.debug("Current card: " + str(currentCard))
-
             #Get next card & update label - maybe add to card.py
             currentCard = self.db.get_record(self.cardCount)
+            Debug.debug("Current card: " + str(currentCard))
             self.card.setWord(currentCard[1], currentCard[2], currentCard[3])
             self.cardStatusLabel.setText(self.card.status)
             self.cardLabel.setText(self.card.word)

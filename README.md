@@ -29,4 +29,3 @@ No. |Feature                                     |Priority |Stage       |
 4.1 |Set card status                             |low      |Waiting     |
 5.0 |Scrape translation of card from bab.la      |High     |Implemented |
 6.0 |Style card and app to look nicer            |low      |Waiting     |
-

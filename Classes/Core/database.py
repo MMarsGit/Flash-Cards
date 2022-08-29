@@ -16,7 +16,9 @@ class database:
             id integer PRIMARY KEY,
             status text NOT NULL,
             word text NOT NULL,
-            translation text NOT NULL
+            translation text NOT NULL,
+            repetitions text,
+            nextAppearance text
         );
         """
         #timesCorrect text,
@@ -78,5 +80,13 @@ class database:
         
         cur=self.conn.cursor()
         cur.execute(nextRecord, str(num))
+        self.conn.commit()
+        return cur.fetchone()
+
+    def updateRepetitions(self, repetitions, nextAppearance, cardname):
+        statement = "UPDATE cards SET repetitions=?, nextAppearance=? WHERE word=?"
+
+        cur=self.conn.cursor()
+        cur.execute(statement, (repetitions, nextAppearance, cardname))
         self.conn.commit()
         return cur.fetchone()
