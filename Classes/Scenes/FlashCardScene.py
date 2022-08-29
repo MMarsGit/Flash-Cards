@@ -84,7 +84,8 @@ class FlashCards(QWidget):
 
         #set layout
         self.setLayout(parentLayout)
-        
+    
+    #Links actions to functions
     def WidgetActions(self):
         Debug.log("Preparing widget actions")
         self.generateButton.clicked.connect(self.generateButtonPressed)
@@ -92,11 +93,11 @@ class FlashCards(QWidget):
         self.wrongButton.clicked.connect(self.wrongButtonPressed)
         self.correctButton.clicked.connect(self.correctButtonPressed)
 
+    #Code to be executed at the start
     def onLoad(self):
         Debug.isDebug = True
         #setup database
         self.db = Database.database()
-        self.db.create_table()
         firstRecord = self.db.get_first_record()
         self.cardCount = int(firstRecord[0])
         self.lastid = self.db.get_last_row_id()
@@ -113,6 +114,7 @@ class FlashCards(QWidget):
         self.setupLayout()
         self.WidgetActions()
         self.onLoad()
+
 
     def generateButtonPressed(self):
         Debug.log("Generate Button Pressed")
@@ -153,19 +155,21 @@ class FlashCards(QWidget):
 
     def wrongButtonPressed(self):
         self.cardCount+=1
-        print(self.cardCount)
-        print(self.lastid)
         if (self.cardCount <= int(self.lastid[0])):
+            Debug.debug("Current card: " + str(currentCard))
+
+            #Get next card & update label - maybe add to card.py
             currentCard = self.db.get_record(self.cardCount)
-            print("Current card: " + str(currentCard))
             self.card.setWord(currentCard[1], currentCard[2], currentCard[3])
             self.cardStatusLabel.setText(self.card.status)
             self.cardLabel.setText(self.card.word)
 
     def correctButtonPressed(self):
         self.cardCount+=1
-        
         if (self.cardCount <= int(self.lastid[0])):
+            Debug.debug("Current card: " + str(currentCard))
+
+            #Get next card & update label - maybe add to card.py
             currentCard = self.db.get_record(self.cardCount)
             self.card.setWord(currentCard[1], currentCard[2], currentCard[3])
             self.cardStatusLabel.setText(self.card.status)
