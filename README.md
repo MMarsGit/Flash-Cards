@@ -20,7 +20,7 @@ No. |Feature                                     |Priority |Stage       |
 1.0 |Flip Flash card                             |High     |Implemented |
 2.0 |Incorrect button goes to next card          |High     |Implemented |
 2.1 |Correct button goes to next card            |High     |Implemented |
-3.0 |Incorrect button sets card to be sent again |Medium   |In Progress |
+3.0 |Incorrect button sets card to be sent again |Medium   |Implemented |
 3.1 |Correct button sets card for 1 day time     |Medium   |In Progress |
 3.2 |If pressed and set for 1 day set for 3 days |Medium   |In Progress |
 3.3 |If 3 days 7 days                            |Medium   |In Progress |
