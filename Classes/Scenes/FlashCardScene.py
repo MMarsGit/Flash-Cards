@@ -18,8 +18,8 @@ class FlashCards(QWidget):
         super().__init__()
 
         #Default variables
-        self.WIDTH = 500
-        self.HEIGHT = 500
+        self.WIDTH = 1024
+        self.HEIGHT = 640
         self.XPOS = 100
         self.YPOS = 100
         self.TITLE = "Flash Cards"
